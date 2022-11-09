@@ -1,7 +1,6 @@
 package com.project.usermanagement.controllers;
 
 import com.project.usermanagement.dao.UsuarioDao;
-import com.project.usermanagement.dao.UsuarioDaoImp;
 import com.project.usermanagement.models.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

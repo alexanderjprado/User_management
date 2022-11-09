@@ -18,7 +18,7 @@ async function registrarUsuario() {
         return;
     }
 
-    const request = await fecth('api/usuarios', {
+    const request = await fetch('api/usuarios', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -26,5 +26,4 @@ async function registrarUsuario() {
         },
         body: JSON.stringify(datos)
     });
-    const usuarios = await request.json();
 }
