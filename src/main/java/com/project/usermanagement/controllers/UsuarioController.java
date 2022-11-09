@@ -2,14 +2,16 @@ package com.project.usermanagement.controllers;
 
 import com.project.usermanagement.dao.UsuarioDao;
 import com.project.usermanagement.models.Usuario;
+import de.mkammerer.argon2.Argon2;
+import de.mkammerer.argon2.Argon2Factory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,7 +20,7 @@ public class UsuarioController {
     @Autowired
     private UsuarioDao usuarioDao;
 
-    @RequestMapping(value = "api/usuarios/{id}", method = RequestMethod.GET)
+    @GetMapping(path = "api/usuarios/{id}")
     public Usuario getUsuario(@PathVariable Long id) {
         Usuario usuario = new Usuario();
         usuario.setId(id);
@@ -34,44 +36,18 @@ public class UsuarioController {
         return usuarioDao.getUsuarios();
     }
 
-    @RequestMapping(value = "api/usuarios", method = RequestMethod.POST)
+    @PostMapping(path = "api/usuarios")
     public void registrarUsuarios(@RequestBody Usuario usuario) {
+
+        Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+        String hash = argon2.hash(1, 1024, 1, usuario.getPassword());
+        usuario.setPassword(hash);
+
         usuarioDao.registrar(usuario);
     }
 
-    @RequestMapping(value = "api/usuarios/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(path = "api/usuarios/{id}")
     public void delete(@PathVariable Long id) {
         usuarioDao.delete(id);
-    }
-
-
-    @RequestMapping(value = "usuarios2")
-    public List<Usuario> getUsuarios2() {
-        List<Usuario> usuarios = new ArrayList<>();
-        Usuario usuario = new Usuario();
-        usuario.setId(51L);
-        usuario.setNombre("Alexander");
-        usuario.setApellido("Prado");
-        usuario.setEmail("ajph@gmail.com");
-        usuario.setTelefono("123456");
-
-        Usuario usuario2 = new Usuario();
-        usuario2.setId(9L);
-        usuario2.setNombre("Alexandra");
-        usuario2.setApellido("Prado");
-        usuario2.setEmail("sandra@gmail.com");
-        usuario2.setTelefono("7891011");
-
-        Usuario usuario3 = new Usuario();
-        usuario3.setId(1103L);
-        usuario3.setNombre("Glenis");
-        usuario3.setApellido("Figueroa");
-        usuario3.setEmail("gfigueroa1103@gmail.com");
-        usuario3.setTelefono("412099");
-
-        usuarios.add(usuario);
-        usuarios.add(usuario2);
-        usuarios.add(usuario3);
-        return usuarios;
     }
 }
